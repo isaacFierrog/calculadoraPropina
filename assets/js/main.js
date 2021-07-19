@@ -2,13 +2,17 @@ const d = document;
 let precioTotal = 0,
     numPersonas = 1,
     propina = 0,
-    totalPersona = 0;
+    totalPersona = 0,
+    propinaPersona = 0;
     
  
 const obtenerTotalPersona = () => ((precioTotal + (precioTotal * propina)) / numPersonas).toFixed(2);
+const obtenerPropinaPersona = () => ((precioTotal * propina) / numPersonas).toFixed(2);
 
-const mostrarResultado = (selecTotal, totalPersona) => {
+const mostrarResultado = (selecTotal, totalPersona, propinaPersona = 0) => {
     const $total = d.querySelectorAll(selecTotal);
+
+    $total[0].textContent = propinaPersona.toString();
     $total[1].textContent = totalPersona.toString();
 };
 
@@ -30,7 +34,8 @@ const obtenerDatosInputs = () => {
         
         campos[$idInput]($input.value);
         totalPersona = obtenerTotalPersona();
-        mostrarResultado(".card__total", totalPersona);
+        propinaPersona = obtenerPropinaPersona();
+        mostrarResultado(".card__total", totalPersona, propinaPersona);
     });
 };
 
@@ -56,17 +61,18 @@ const obtenerDescuentoBotones = () => {
             propina = parseFloat(e.target.value);
             totalPersona = obtenerTotalPersona();
             mostrarResultado(".card__total", totalPersona);
-        }else{
+        }else if(e.target.matches("input[type='number']") && e.target.matches("input[id='propina']")){
             desmarcarBotones("[type='radio']");
         }
     });
 };
 
 const aplicarReset = (idReset) => {
-    const $botonReset = d.getElementById(idReset);
-
     d.addEventListener("click", e => {
-        if(!e.target === $botonReset) return;
+        const $botonReset = d.getElementById(idReset);
+
+        if(e.target !== $botonReset) return;
+
         desmarcarBotones("[type='radio']");
         limpiarTotales(".card__total");
         limpiarInputs("input[type='number']");
