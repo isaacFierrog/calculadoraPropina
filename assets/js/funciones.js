@@ -1,0 +1,1 @@
+export const esElemento = (e, selec) => e.target.matches(selec);
